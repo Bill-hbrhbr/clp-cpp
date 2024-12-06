@@ -1,5 +1,3 @@
-#cmake_minimum_required(VERSION 3.16.3)
-
 project(clp_error_handling LANGUAGES CXX)
 
 add_library(clp_error_handling INTERFACE)
