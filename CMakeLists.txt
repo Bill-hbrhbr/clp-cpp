@@ -11,9 +11,9 @@ list(APPEND CMAKE_MODULE_PATH
 # When clp-cpp is included as subproject (i.e. using add_subdirectory(clp-cpp)) in the source tree
 # of a project that uses it, install rules are disabled.
 if(NOT CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  option(ABSL_ENABLE_INSTALL "Enable install rule" OFF)
+  option(CLP_CPP_ENABLE_INSTALL "Enable install rule" OFF)
 else()
-  option(ABSL_ENABLE_INSTALL "Enable install rule" ON)
+  option(CLP_CPP_ENABLE_INSTALL "Enable install rule" ON)
 endif()
 
 # Add clp-cpp project directory to include path lists
