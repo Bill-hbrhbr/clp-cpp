@@ -3,6 +3,7 @@
 
 #include <charconv>
 #include <string>
+#include <cstring>
 
 namespace clp::string_utils {
 /**
