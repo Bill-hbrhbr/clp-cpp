@@ -6,7 +6,7 @@
 
 #include <outcome/single-header/outcome.hpp>
 
-#include "clp/regex_utils/RegexToWildcardTranslatorConfig.hpp"
+#include "RegexToWildcardTranslatorConfig.hpp"
 
 namespace clp::regex_utils {
 

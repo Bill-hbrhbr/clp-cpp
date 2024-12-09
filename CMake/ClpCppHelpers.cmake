@@ -52,28 +52,22 @@ function(clp_cpp_library)
     set(_INSTALL_LIB_NAME "clp_${arg_clp_cpp_lib_NAME}")
   endif()
 
-  #message(STATUS "CLP_CPP_LIB_NAME = ${arg_clp_cpp_lib_NAME}")
-  #message(STATUS "CLP_CPP_LIB_HDRS = ${arg_clp_cpp_lib_HDRS}")
-
   check_if_header_only_library(arg_clp_cpp_lib_SRCS _CLP_CPP_LIB_IS_INTERFACE)
-  #message(STATUS "CLP_CPP_LIB_IS_INTERFACE = ${_CLP_CPP_LIB_IS_INTERFACE}")
 
   if (_CLP_CPP_LIB_IS_INTERFACE)
     add_library(${_INSTALL_LIB_NAME} INTERFACE)
     add_library(clp::${arg_clp_cpp_lib_NAME} ALIAS ${_INSTALL_LIB_NAME})
-
     target_include_directories(${_INSTALL_LIB_NAME} INTERFACE ${CLP_CPP_COMMON_INCLUDE_DIRS})
     target_compile_features(${_INSTALL_LIB_NAME} INTERFACE cxx_std_20)
   else()
-    #message(STATUS "_INSTALL_LIB_NAME = ${_INSTALL_LIB_NAME}")
     add_library(${_INSTALL_LIB_NAME} STATIC)
     add_library(clp::${arg_clp_cpp_lib_NAME} ALIAS ${_INSTALL_LIB_NAME})
     target_sources(${_INSTALL_LIB_NAME} PRIVATE ${arg_clp_cpp_lib_SRCS} ${arg_clp_cpp_lib_HDRS})
 
     target_include_directories(${_INSTALL_LIB_NAME} PUBLIC ${CLP_CPP_COMMON_INCLUDE_DIRS})
-    target_compile_features(${_INSTALL_LIB_NAME} PRIVATE cxx_std_20)
+    target_compile_features(${_INSTALL_LIB_NAME} PUBLIC cxx_std_20)
     target_link_libraries(${_INSTALL_LIB_NAME}
-      PUBLIC ${arg_clp_cpp_lib_DEPS}
+      PUBLIC  ${arg_clp_cpp_lib_DEPS}
       PRIVATE ${arg_clp_cpp_lib_LINKOPTS}
     )
   endif()

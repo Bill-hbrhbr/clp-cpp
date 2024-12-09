@@ -6,12 +6,12 @@
 #include <string_view>
 #include <system_error>
 
+#include <clp/string_utils/string_utils.hpp>
 #include <outcome/single-header/outcome.hpp>
-#include <string_utils/string_utils.hpp>
 
-#include "clp/regex_utils/constants.hpp"
-#include "clp/regex_utils/ErrorCode.hpp"
-#include "clp/regex_utils/RegexToWildcardTranslatorConfig.hpp"
+#include "constants.hpp"
+#include "ErrorCode.hpp"
+#include "RegexToWildcardTranslatorConfig.hpp"
 
 namespace clp::regex_utils {
 using clp::string_utils::is_alphabet;
