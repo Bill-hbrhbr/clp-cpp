@@ -4,6 +4,7 @@
 #include <charconv>
 #include <string>
 #include <cstring>
+#include <vector>
 
 namespace clp::string_utils {
 /**
@@ -22,6 +23,18 @@ inline bool is_alphabet(char c) {
  */
 inline bool is_decimal_digit(char c) {
     return '0' <= c && c <= '9';
+}
+
+/**
+ * Checks if character is a hexadecimal (base-16) digit
+ * @param c
+ * @return true if c is a hexadecimal digit, false otherwise
+ */
+inline bool is_delim(char c) {
+	return false == (
+			'+' == c || ('-' <= c && c <= '9') || ('A' <= c && c <= 'Z') || '\\' == c
+			|| '_' == c || ('a' <= c && c <= 'z')
+	);
 }
 
 /**
@@ -141,6 +154,14 @@ bool convert_string_to_int(std::string_view raw, integer_t& converted) {
         return result.ec == std::errc();
     }
 }
+
+/**
+ * Converts a string column descriptor delimited by '.' into a list of tokens
+ * @param descriptor
+ * @param tokens
+ * @return true if the descriptor was tokenized successfully, false otherwise
+ */
+bool tokenize_column_descriptor(std::string const& descriptor, std::vector<std::string>& tokens);
 }  // namespace clp::string_utils
 
 #endif  // CLP_STRING_UTILS_STRING_UTILS_HPP
