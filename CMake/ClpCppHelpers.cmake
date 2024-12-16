@@ -1,6 +1,7 @@
 # check_if_header_only_library()
 #
-# Check if a library is header-only.
+# @param source_list_var The list of source files that a target library uses
+# @param is_header_only_var Returns whether the target library only contains header files
 function(check_if_header_only_library source_list_var is_header_only_var)
   set(local_source_list "${${source_list_var}}")
   foreach(src_file IN LISTS local_source_list)
@@ -47,29 +48,50 @@ function(clp_cpp_library)
   )
 
   if(CLP_CPP_ENABLE_INSTALL)
-    set(_INSTALL_LIB_NAME "${arg_clp_cpp_lib_NAME}")
+    set(_TARGET_LIB_NAME "${arg_clp_cpp_lib_NAME}")
   else()
-    set(_INSTALL_LIB_NAME "clp_${arg_clp_cpp_lib_NAME}")
+    set(_TARGET_LIB_NAME "clp_${arg_clp_cpp_lib_NAME}")
   endif()
 
   check_if_header_only_library(arg_clp_cpp_lib_SRCS _CLP_CPP_LIB_IS_INTERFACE)
 
   if (_CLP_CPP_LIB_IS_INTERFACE)
-    add_library(${_INSTALL_LIB_NAME} INTERFACE)
-    add_library(clp::${arg_clp_cpp_lib_NAME} ALIAS ${_INSTALL_LIB_NAME})
-    target_include_directories(${_INSTALL_LIB_NAME} INTERFACE ${CLP_CPP_COMMON_INCLUDE_DIRS})
-    target_compile_features(${_INSTALL_LIB_NAME} INTERFACE cxx_std_20)
-  else()
-    add_library(${_INSTALL_LIB_NAME} STATIC)
-    add_library(clp::${arg_clp_cpp_lib_NAME} ALIAS ${_INSTALL_LIB_NAME})
-    target_sources(${_INSTALL_LIB_NAME} PRIVATE ${arg_clp_cpp_lib_SRCS} ${arg_clp_cpp_lib_HDRS})
-
-    target_include_directories(${_INSTALL_LIB_NAME} PUBLIC ${CLP_CPP_COMMON_INCLUDE_DIRS})
-    target_compile_features(${_INSTALL_LIB_NAME} PUBLIC cxx_std_20)
-    target_link_libraries(${_INSTALL_LIB_NAME}
-      PUBLIC  ${arg_clp_cpp_lib_DEPS}
-      PRIVATE ${arg_clp_cpp_lib_LINKOPTS}
+    add_library(${_TARGET_LIB_NAME} INTERFACE)
+    target_include_directories(${_TARGET_LIB_NAME} INTERFACE
+      "$<BUILD_INTERFACE:${CLP_CPP_BUILD_INCLUDE_DIRS}>"
+      "$<INSTALL_INTERFACE:${CLP_CPP_INSTALL_INCLUDE_DIRS}>"
     )
+    target_compile_features(${_TARGET_LIB_NAME} INTERFACE cxx_std_20)
+  else()
+    add_library(${_TARGET_LIB_NAME} STATIC)
+    target_sources(${_TARGET_LIB_NAME} PRIVATE ${arg_clp_cpp_lib_SRCS} ${arg_clp_cpp_lib_HDRS})
+    target_include_directories(${_TARGET_LIB_NAME} PUBLIC
+      "$<BUILD_INTERFACE:${CLP_CPP_BUILD_INCLUDE_DIRS}>"
+      "$<INSTALL_INTERFACE:${CLP_CPP_INSTALL_INCLUDE_DIRS}>"
+    )
+    target_compile_features(${_TARGET_LIB_NAME} PUBLIC cxx_std_20)
+  endif()
+
+  set_property(TARGET ${_TARGET_LIB_NAME} PROPERTY PUBLIC_HEADER ${arg_clp_cpp_lib_HDRS})
+
+  target_link_libraries(${_TARGET_LIB_NAME}
+    PUBLIC  ${arg_clp_cpp_lib_DEPS}
+    PRIVATE ${arg_clp_cpp_lib_LINKOPTS}
+  )
+
+  add_library(clp::${arg_clp_cpp_lib_NAME} ALIAS ${_TARGET_LIB_NAME})
+
+  if (CLP_CPP_ENABLE_INSTALL)
+    install(
+      FILES ${arg_clp_cpp_lib_HDRS}
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/clp/${arg_clp_cpp_lib_NAME}
+    )
+    install(TARGETS ${_TARGET_LIB_NAME}
+        EXPORT ${TARGET_EXPORT_NAME}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
   endif()
 
 endfunction()

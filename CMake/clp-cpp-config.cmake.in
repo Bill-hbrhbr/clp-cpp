@@ -1,0 +1,5 @@
+# clp-cpp CMake configuration file
+
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/@TARGET_EXPORT_NAME@.cmake")
