@@ -70,9 +70,8 @@ function(clp_cpp_library)
       "$<INSTALL_INTERFACE:${CLP_CPP_INSTALL_INCLUDE_DIRS}>"
     )
     target_compile_features(${_TARGET_LIB_NAME} PUBLIC cxx_std_20)
+    set_property(TARGET ${_TARGET_LIB_NAME} PROPERTY OUTPUT_NAME "clp_${arg_clp_cpp_lib_NAME}")
   endif()
-
-  set_property(TARGET ${_TARGET_LIB_NAME} PROPERTY PUBLIC_HEADER ${arg_clp_cpp_lib_HDRS})
 
   target_link_libraries(${_TARGET_LIB_NAME}
     PUBLIC  ${arg_clp_cpp_lib_DEPS}
